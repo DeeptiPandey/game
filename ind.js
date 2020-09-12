@@ -1,173 +1,173 @@
-const startButton = document.getElementById("start-button")
-const instructions = document.getElementById("instructions-text")
-const mainPlayArea = document.getElementById("main-play-area")
-const shooter = document.getElementById("player-controlled-shooter")
-const monsterImgs = ['target.jpg', 'target.jpg', 'target.jpg']
-const scoreCounter = document.querySelector('#score span')
+const startButton = document.getElementById("start-button");
+const instructions = document.getElementById("instructions-text");
+const mainPlayArea = document.getElementById("main-play-area");
+const shooter = document.getElementById("player-controlled-shooter");
+const circlesImgs = ["aim.png", "aim.png", "aim.png"];
+const scoreCounter = document.querySelector("#score span");
 
-let justice
-let monsterInterval
-
+let justice;
+let circlesInterval;
 
 startButton.addEventListener("click", (event) => {
-  playGame()
-})
+  playGame();
+});
 
-
-function letShipFly(event) {
+function letFaujiFly(event) {
   if (event.key === "ArrowUp") {
-    event.preventDefault()
-    moveUp()
+    event.preventDefault();
+    moveUp();
   } else if (event.key === "ArrowDown") {
-    event.preventDefault()
-    moveDown()
+    event.preventDefault();
+    moveDown();
   } else if (event.key === " ") {
-    event.preventDefault()
-    fireLaser()
+    event.preventDefault();
+    firebullet();
   }
 }
-
 
 function moveUp() {
-  let topPosition = window.getComputedStyle(shooter).getPropertyValue('top')
+  let topPosition = window.getComputedStyle(shooter).getPropertyValue("top");
   if (shooter.style.top === "0px") {
-    return
+    return;
   } else {
-    let position = parseInt(topPosition)
-    position -= 4
-    shooter.style.top = `${position}px`
+    let position = parseInt(topPosition);
+    position -= 4;
+    shooter.style.top = `${position}px`;
   }
 }
-
 
 function moveDown() {
-  let topPosition = window.getComputedStyle(shooter).getPropertyValue('top')
+  let topPosition = window.getComputedStyle(shooter).getPropertyValue("top");
   if (shooter.style.top === "360px") {
-    return
+    return;
   } else {
-    let position = parseInt(topPosition)
-    position += 4
-    shooter.style.top = `${position}px`
+    let position = parseInt(topPosition);
+    position += 4;
+    shooter.style.top = `${position}px`;
   }
 }
 
-
-function fireLaser() {
-  let laser = createLaserElement()
-  mainPlayArea.appendChild(laser)
-  let laserSFX = new Audio('audio/laser-sfx.m4a')
-  laserSFX.play()
-  moveLaser(laser)
+function firebullet() {
+  let bullet = createbulletElement();
+  mainPlayArea.appendChild(bullet);
+  let bulletSFX = new Audio("Gunshot.mp3");
+  bulletSFX.play();
+  movebullet(bullet);
 }
 
-
-function createLaserElement() {
-  let xPosition = parseInt(window.getComputedStyle(shooter).getPropertyValue('left'))
-  let yPosition = parseInt(window.getComputedStyle(shooter).getPropertyValue('top'))
-  let newLaser = document.createElement('img')
-  newLaser.src = 'images/laser.png'
-  newLaser.classList.add('laser')
-  newLaser.style.left = `${xPosition}px`
-  newLaser.style.top = `${yPosition - 10}px`
-  return newLaser
+function createbulletElement() {
+  let xPosition = parseInt(
+    window.getComputedStyle(shooter).getPropertyValue("left")
+  );
+  let yPosition = parseInt(
+    window.getComputedStyle(shooter).getPropertyValue("top")
+  );
+  let newbullet = document.createElement("img");
+  newbullet.src = "bullet.png";
+  newbullet.classList.add("bullet");
+  newbullet.style.left = `${xPosition}px`;
+  newbullet.style.top = `${yPosition - 10}px`;
+  return newbullet;
 }
 
-
-function moveLaser(laser) {
-  let laserInterval = setInterval(() => {
-    let xPosition = parseInt(laser.style.left)
-    let monsters = document.querySelectorAll(".monster")
-    monsters.forEach(monster => {
-      if (checkLaserCollision(laser, monster)) {
-        let explosion = new Audio('audio/explosion.m4a')
-        explosion.play()
-        monster.src = "images/explosion.png"
-        monster.classList.remove("monster")
-        monster.classList.add("dead-monster")
-        scoreCounter.innerText = parseInt(scoreCounter.innerText) + 100
+function movebullet(bullet) {
+  let bulletInterval = setInterval(() => {
+    let xPosition = parseInt(bullet.style.left);
+    let circles = document.querySelectorAll(".circles");
+    circles.forEach((circles) => {
+      if (checkbulletCollision(bullet, circles)) {
+        let explosion = new Audio("Explosion.mp3");
+        explosion.play();
+        circles.src = "explosion.png";
+        circles.classList.remove("circles");
+        circles.classList.add("dead-circles");
+        scoreCounter.innerText = parseInt(scoreCounter.innerText) + 100;
       }
-    })
+    });
     if (xPosition === 340) {
-      laser.remove()
+      bullet.remove();
     } else {
-      laser.style.left = `${xPosition + 4}px`
+      bullet.style.left = `${xPosition + 4}px`;
     }
-  }, 10)
+  }, 10);
 }
 
-
-function createMonster() {
-  let newMonster = document.createElement('img')
-  let monsterSpriteImg = monsterImgs[Math.floor(Math.random()*monsterImgs.length)]
-  newMonster.src = monsterSpriteImg
-  newMonster.classList.add('monster')
-  newMonster.classList.add('monster-transition')
-  newMonster.style.left = '370px'
-  newMonster.style.top = `${Math.floor(Math.random() * 330) + 30}px`
-  mainPlayArea.appendChild(newMonster)
-  moveMonster(newMonster)
+function createcircles() {
+  let newcircles = document.createElement("img");
+  let circlesSpriteImg =
+    circlesImgs[Math.floor(Math.random() * circlesImgs.length)];
+  newcircles.src = circlesSpriteImg;
+  newcircles.classList.add("circles");
+  newcircles.classList.add("circles-transition");
+  newcircles.style.left = "370px";
+  newcircles.style.top = `${Math.floor(Math.random() * 330) + 30}px`;
+  mainPlayArea.appendChild(newcircles);
+  movecircles(newcircles);
 }
 
-
-function moveMonster(monster) {
-  let moveMonsterInterval = setInterval(() => {
-    let xPosition = parseInt(window.getComputedStyle(monster).getPropertyValue('left'))
+function movecircles(circles) {
+  let movecirclesInterval = setInterval(() => {
+    let xPosition = parseInt(
+      window.getComputedStyle(circles).getPropertyValue("left")
+    );
     if (xPosition <= 50) {
-      if (Array.from(monster.classList).includes("dead-monster")) {
-        monster.remove()
+      if (Array.from(circles.classList).includes("dead-circles")) {
+        circles.remove();
       } else {
-        gameOver()
+        gameOver();
       }
     } else {
-      monster.style.left = `${xPosition - 4}px`
+      circles.style.left = `${xPosition - 4}px`;
     }
-  }, 30)
+  }, 30);
 }
 
-
-function checkLaserCollision(laser, monster) {
-  let laserLeft = parseInt(laser.style.left)
-  let laserTop = parseInt(laser.style.top)
-  let laserBottom = laserTop - 20
-  let monsterTop = parseInt(monster.style.top)
-  let monsterBottom = monsterTop - 30
-  let monsterLeft = parseInt(monster.style.left)
-  if (laserLeft != 340 && laserLeft + 40 >= monsterLeft) {
-    if ( (laserTop <= monsterTop && laserTop >= monsterBottom) ) {
-      return true
+function checkbulletCollision(bullet, circles) {
+  let bulletLeft = parseInt(bullet.style.left);
+  let bulletTop = parseInt(bullet.style.top);
+  let bulletBottom = bulletTop - 20;
+  let circlesTop = parseInt(circles.style.top);
+  let circlesBottom = circlesTop - 30;
+  let circlesLeft = parseInt(circles.style.left);
+  if (bulletLeft != 340 && bulletLeft + 40 >= circlesLeft) {
+    if (bulletTop <= circlesTop && bulletTop >= circlesBottom) {
+      return true;
     } else {
-      return false
+      return false;
     }
   } else {
-    return false
+    return false;
   }
 }
-
 
 function gameOver() {
-  window.removeEventListener("keydown", letShipFly)
-  justice.pause()
-  let gameOverSfx = new Audio('audio/game-over.m4a')
-  gameOverSfx.play()
-  clearInterval(monsterInterval)
-  let monsters = document.querySelectorAll(".monster")
-  monsters.forEach(monster => monster.remove())
-  let lasers = document.querySelectorAll(".laser")
-  lasers.forEach(laser => laser.remove())
+  window.removeEventListener("keydown", letFaujiFly);
+  justice.pause();
+  let gameOverSfx = new Audio("game-over.mp3");
+  gameOverSfx.play();
+  clearInterval(circlesInterval);
+  let circless = document.querySelectorAll(".circles");
+  circless.forEach((circles) => circles.remove());
+  let bullets = document.querySelectorAll(".bullet");
+  bullets.forEach((bullet) => bullet.remove());
   setTimeout(() => {
-    alert(`Game Over! The enemies made it . Your final score is ${scoreCounter.innerText}!`)
-    shooter.style.top = "180px"
-    startButton.style.display = "block"
-    instructions.style.display = "block"
-    scoreCounter.innerText = 0
-  }, 1100)
+    alert(
+      `Game Over! The circles made it to Base. Your final score is ${scoreCounter.innerText}!`
+    );
+    shooter.style.top = "180px";
+    startButton.style.display = "block";
+    instructions.style.display = "block";
+    scoreCounter.innerText = 0;
+  }, 1100);
 }
 
 function playGame() {
-  startButton.style.display = 'none'
-  instructions.style.display = 'none'
-  window.addEventListener("keydown", letShipFly)
-  justice = new Audio("audio/Justice-One-Minute-To-Midnight.m4a")
-  justice.play()
-  monsterInterval = setInterval(() => { createMonster() }, 2100)
+  startButton.style.display = "none";
+  instructions.style.display = "none";
+  window.addEventListener("keydown", letFaujiFly);
+  justice = new Audio("");
+  justice.play();
+  circlesInterval = setInterval(() => {
+    createcircles();
+  }, 2100);
 }

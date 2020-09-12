@@ -1,8 +1,7 @@
 #main-play-area {
-  width: 100%;
+  width:  400px ;
   height: 400px;
-  background-color: indigo;
-
+  background-image: url("battlefield.png");
 }
 
 #instructions-text {
@@ -33,31 +32,27 @@
   top: 180px;
 }
 
-.laser {
+.bullet {
   width: 20px;
   height: 20px;
   position: relative;
 }
 
-.monster {
+.circles {
   width: 30px;
   height: 30px;
   position: absolute;
   border-radius: 50%;
   background-color: #fff;
-  box-shadow:
-       0 0 6px 3px #fff,
-       0 0 5px 6px #f0f,
-       0 0 9px 9px #0ff;
+  box-shadow: 0 0 6px 3px #fff, 0 0 5px 6px #f0f, 0 0 9px 9px #0ff;
 }
 
-.monster-transition {
+.circles-transition {
   opacity: 1;
   transition: opacity 1.5s ease-out;
 }
 
-
-.dead-monster {
+.dead-circles {
   width: 30px;
   height: 30px;
   position: absolute;
